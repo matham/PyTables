@@ -61,7 +61,6 @@ jobs:
         os: [ 'ubuntu-latest' ]
         arch: [ 'x86_64',  'aarch64' ]
         cibw_python: [ "cp*" ]
-        platform: ""
         include:
           - os: macos-latest
             arch: x86_64
