@@ -61,11 +61,14 @@ jobs:
         os: [ 'ubuntu-latest' ]
         arch: [ 'x86_64',  'aarch64' ]
         cibw_python: [ "cp*" ]
+        platform: ""
         include:
           - os: macos-latest
             arch: x86_64
+            platform: macosx_10_9_x86_64
           - os: macos-latest
             arch: arm64
+            platform: macosx_11_0_arm64
 
     steps:
       - uses: actions/checkout@v3
@@ -113,6 +116,9 @@ jobs:
           CIBW_BUILD_VERBOSITY_MACOS: 3
           CIBW_ARCHS: ${{ matrix.arch }}
           CIBW_BUILD: ${{ matrix.cibw_python }}
+          CIBW_BEFORE_BUILD_MACOS: >
+            pip install blosc2>=0.6.3 --platform ${{ matrix.platform }} --only-binary=:all: &&
+            pip install -r requirements.txt
           CIBW_BEFORE_BUILD: "pip install -r requirements.txt"
           CIBW_ENVIRONMENT: DISABLE_AVX2='TRUE' CFLAGS=-g0 HDF5_DIR=/tmp/hdf5 LD_LIBRARY_PATH="/tmp/hdf5/lib:${LD_LIBRARY_PATH}" PKG_CONFIG_PATH="/tmp/hdf5/lib/pkgconfig:${PKG_CONFIG_PATH}"
           CIBW_ENVIRONMENT_MACOS: CC=/usr/bin/clang CXX=/usr/bin/clang HDF5_DIR=/tmp/hdf5 LZO_DIR=/tmp/hdf5 BZIP2_DIR=/tmp/hdf5 LD_LIBRARY_PATH="/tmp/hdf5/lib:${LD_LIBRARY_PATH}" PKG_CONFIG_PATH="/tmp/hdf5/lib/pkgconfig:${PKG_CONFIG_PATH}"
